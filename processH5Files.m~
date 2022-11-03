@@ -8,19 +8,15 @@ dir = "/home/shengduo/pylith-developer/build/debug/pylith-nonRegSlipLawWithVaryi
 % As = [0.008, 0.01, 0.012, 0.014, 0.016];
 % Bs = [0.008, 0.01, 0.012, 0.014, 0.016];
 
-% As = [0.002, 0.004, 0.006, 0.008, 0.01];
-% Bs = [0.006 0.008 0.01 0.012 0.014 0.016];
-As = [0.006 0.0064 0.0068 0.0072 0.0076 0.008];
-Bs = [0.012 0.0124 0.0128 0.0132 0.0136 0.014];
+As = [0.002, 0.004, 0.006, 0.008, 0.0];
+Bs = [0.008, 0.01, 0.012, 0.014, 0.016];
+
 % As = [0.011, 0.015];
 % Bs = [0.011, 0.015];
 
-% As = [0.003, 0.007];
-% Bs = [0.009, 0.013];
-
 nOfFiles = length(As) * length(Bs);
 saveDir = "/home/shengduo/InverseProblems/GPRWorkingField/data/";
-saveFileName = "trainGrid1102_1.mat";
+saveFileName = "trainGrid.mat";
 
 % Get sizes
 filename = "A" + string(As(1)) + "_B" + string(Bs(1)) + "-fault.h5";
@@ -62,7 +58,7 @@ for i = 1:1:length(As)
 end
 
 %% Do moment-time integral for the points
-momentTerms = 64;
+momentTerms = 4;
 observations = zeros(nOfFiles, momentTerms * nOfNodes);
 for m = 1 : 1 : momentTerms
     for fileNo = 1 : 1 : nOfFiles
