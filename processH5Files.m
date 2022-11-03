@@ -5,13 +5,17 @@ close all;
 
 %% Load .h5 file from directory
 dir = "/home/shengduo/pylith-developer/build/debug/pylith-nonRegSlipLawWithVaryingB/examples/bar_shearwave/quad4/output/fault/";
+FourierTerms = 16;
+
 % As = [0.008, 0.01, 0.012, 0.014, 0.016];
 % Bs = [0.008, 0.01, 0.012, 0.014, 0.016];
 
 % As = [0.002, 0.004, 0.006, 0.008, 0.01];
 % Bs = [0.006 0.008 0.01 0.012 0.014 0.016];
+
 As = [0.006 0.0064 0.0068 0.0072 0.0076 0.008];
 Bs = [0.012 0.0124 0.0128 0.0132 0.0136 0.014];
+
 % As = [0.011, 0.015];
 % Bs = [0.011, 0.015];
 
@@ -61,13 +65,17 @@ for i = 1:1:length(As)
     end
 end
 
-%% Do moment-time integral for the points
-momentTerms = 64;
-observations = zeros(nOfFiles, momentTerms * nOfNodes);
-for m = 1 : 1 : momentTerms
+%% Calculate Fourier coefficients (cos(k pi/T t)) for the point histories
+observations = zeros(nOfFiles, FourierTerms * nOfNodes);
+for m = 1 : 1 : FourierTerms
     for fileNo = 1 : 1 : nOfFiles
+        nOfTSteps = length(ts(fileNo, :));
+        nOfNodes = size(Vxs(fileNo, :, :), 2);
+        T = max(ts(fileNo, :));
+        kPiTt = (m - 1) * pi / T * ts(fileNo, :);
+        cosines = cos(kPiTt);
         observations(fileNo, (m - 1) * nOfNodes + 1 : m * nOfNodes) = ...
-            trapz(t, power(reshape(Vxs(fileNo, :, :), [nOfNodes, nOfTSteps])', m));
+            trapz(ts(fileNo, :), (reshape(Vxs(fileNo, :, :), [nOfNodes, nOfTSteps]) .* cosines)');
     end
 end
 
